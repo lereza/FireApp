@@ -1,0 +1,354 @@
+<!-- Your HTML code -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+<div class="page-inner">
+  <div class="page-header">
+    <h4 class="page-title">Fire Incidents Map</h4>
+    <ul class="breadcrumbs">
+      <li class="nav-home">
+        <a href="#">
+          <i class="flaticon-home"></i>
+        </a>
+      </li>
+      <li class="separator">
+        <i class="flaticon-right-arrow"></i>
+      </li>
+      <li class="nav-item">
+        <a href="#">Maps</a>
+      </li>
+      <li class="separator">
+        <i class="flaticon-right-arrow"></i>
+      </li>
+      <li class="nav-item">
+        <a href="#">Fire Incidents</a>
+      </li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-transparent">
+        <div class="card-header">
+          <h4 class="card-title text-center">Fire Incidents</h4>
+          <p class="card-category text-center">Filter by city and explore incidents. Made by our friends from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>.</p>
+        </div>
+        <!-- Add a dropdown menu to select a city -->
+        <form id="city-form">
+          <select id="city-select" style="border-radius: 5px;  border-top: 3px solid rgb(114, 150, 228); background-color: aliceblue;">
+            <option value="" >Select City</option>
+            {% for city in cities %}
+            <option value="{{ city }}">{{ city }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" style="border-radius: 5px; border: none; background-color: rgb(54, 124, 255);color: white; ">Go</button>
+        </form>
+        <div id="map" style="width: 100%; height: 65vh; border-radius: 10px; border-top: 5px solid rgb(230, 119, 54); border-bottom: 5px solid rgb(230, 119, 54);"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+  var map = L.map('map');
+  var incidentIcon = L.icon({
+    iconUrl: '{% static "img/flame.png" %}', // Use Django static tag for the icon URL
+    iconSize: [50, 50], // Adjust the size as needed
+  });
+
+  function setMapView(latitude, longitude, zoom) {
+    map.setView([latitude, longitude], zoom);
+  }
+
+  setMapView(9.81644, 118.72239, 5); // Default view
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  var incidentMarkers = [];
+  var cityForm = document.getElementById('city-form');
+  var citySelect = document.getElementById('city-select');
+
+  // Function to load markers based on city
+  function loadMarkers(city) {
+    fetch('/city_data/?city=' + city)
+      .then(response => response.json())
+      .then(data => {
+        if (data.latitude && data.longitude) {
+          setMapView(data.latitude, data.longitude, 12);
+        } else {
+          console.error('Invalid latitude or longitude');
+        }
+        
+        // Clear existing markers from the map before adding new ones
+        incidentMarkers.forEach(marker => {
+          map.removeLayer(marker);
+        });
+        
+        incidentMarkers = []; // Reset the markers array
+
+        data.incidents.forEach(function(incident) {
+          var latitude = parseFloat(incident.latitude);
+          var longitude = parseFloat(incident.longitude);
+
+          var marker = L.marker([latitude, longitude], { icon: incidentIcon }).addTo(map);
+          var popupContent = incident.address;
+          marker.bindPopup(popupContent);
+
+          marker.on('mouseover', function(e) {
+            this.openPopup();
+          });
+
+          marker.on('mouseout', function(e) {
+            this.closePopup();
+          });
+
+          incidentMarkers.push(marker);
+        });
+      })
+      .catch(error => console.error('Error fetching city data:', error));
+  }
+
+  cityForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    var selectedCity = citySelect.value;
+    if (selectedCity) {
+      loadMarkers(selectedCity);
+    }
+  });
+
+  // Fetch incident data for the default city on page load
+  fetch('/fire-incidents-map/')
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(function(incident) {
+        var latitude = parseFloat(incident.latitude);
+        var longitude = parseFloat(incident.longitude);
+
+        var marker = L.marker([latitude, longitude], { icon: incidentIcon }).addTo(map);
+        var popupContent = incident.address;
+        marker.bindPopup(popupContent);
+
+        marker.on('mouseover', function(e) {
+          this.openPopup();
+        });
+
+        marker.on('mouseout', function(e) {
+          this.closePopup();
+        });
+
+        incidentMarkers.push(marker);
+      });
+    })
+    .catch(error => console.error('Error fetching incident data:', error));
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Function to load markers based on city
+function loadMarkers(city) {
+  // Change the URL to include the selected city
+  window.location.href = '/fire-incidents-map/?city=' + city;
+
+  // Fetch average latitude and longitude for the selected city
+
+    setMapView(averageLatitude, averageLongitude, 5);
+}
+
+var map = L.map('map');
+var incidentIcon = L.icon({
+  iconUrl: '../static/img/flame.png', // Path to your incident marker icon
+  iconSize: [50, 50], // Adjust the size as needed
+});
+function setMapView(latitude, longitude, zoom) {
+map.setView([latitude, longitude], zoom);
+}
+
+setMapView(9.81644, 118.72239, 5);
+
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Create an array to hold all the incident markers
+var incidentMarkers = [];
+
+// Define the incident marker data
+var incidentMarkerData = {{ incident_data|safe }};
+
+incidentMarkerData.forEach(function(data) {
+  var latitude = parseFloat(data.latitude);
+  var longitude = parseFloat(data.longitude);
+
+  var marker = L.marker([latitude, longitude], { icon: incidentIcon }).addTo(map);
+
+  // Create a popup and set its content
+  var popupContent = data.address;
+  var popup = L.popup().setContent(popupContent);
+  
+  marker.bindPopup(popupContent);
+
+  // Bind mouseover and mouseout events to the marker
+  marker.on('mouseover', function(e) {
+    this.openPopup();
+  });
+
+  marker.on('mouseout', function(e) {
+    this.closePopup();
+  });
+
+  // Add the marker to the incidentMarkers array
+  incidentMarkers.push(marker);
+});
+
+
+// Event listener for form submission
+
+document.getElementById('city-form').addEventListener('submit', function(event) {
+  event.preventDefault();
+  var selectedCity = document.getElementById('city-select').value;
+  if (selectedCity) {
+    loadMarkers(selectedCity);
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fetch('/fire-incidents-map/?city=' + selectedCity)
+.then(response => response.json())
+.then(data => {
+  // Clear existing markers from the map before adding new ones
+  incidentMarkers.forEach(marker => {
+    map.removeLayer(marker);
+  });
+  
+
+  // Loop through the filtered data and create new markers
+  data.forEach(function(data) {
+    var latitude = parseFloat(data.latitude);
+    var longitude = parseFloat(data.longitude);
+
+    var marker = L.marker([latitude, longitude], { icon: incidentIcon }).addTo(map);
+
+    var popupContent = data.address;
+    var popup = L.popup().setContent(popupContent);
+
+    marker.bindPopup(popupContent);
+
+    // Bind mouseover and mouseout events to the marker
+    marker.on('mouseover', function(e) {
+      this.openPopup();
+    });
+
+    marker.on('mouseout', function(e) {
+      this.closePopup();
+    });
+
+    // Add the marker to the incidentMarkers array
+    incidentMarkers.push(marker);
+  }); 
+  document.getElementById('city-select').addEventListener('change', function() {
+    var selectedCity = this.value;
+
+
+      
+      .catch(error => console.error('Error fetching data:', error));
+  });
+})
+
+
+
+
+
+
+
+
+
+
+
+fetch('/fire-incidents-map/?city=' + selectedCity)
+.then(response => response.json())
+.then(data => {
+  // Clear existing markers from the map before adding new ones
+  incidentMarkers.forEach(marker => {
+    map.removeLayer(marker);
+  });
+  
+
+  // Loop through the filtered data and create new markers
+  data.forEach(function(data) {
+    var latitude = parseFloat(data.latitude);
+    var longitude = parseFloat(data.longitude);
+
+    var marker = L.marker([latitude, longitude], { icon: incidentIcon }).addTo(map);
+
+    var popupContent = data.address;
+    var popup = L.popup().setContent(popupContent);
+
+    marker.bindPopup(popupContent);
+
+    // Bind mouseover and mouseout events to the marker
+    marker.on('mouseover', function(e) {
+      this.openPopup();
+    });
+
+    marker.on('mouseout', function(e) {
+      this.closePopup();
+    });
+
+    // Add the marker to the incidentMarkers array
+    incidentMarkers.push(marker);
+  }); 
+  document.getElementById('city-select').addEventListener('change', function() {
+    var selectedCity = this.value;
+
+
+      
+      .catch(error => console.error('Error fetching data:', error));
+  });
+})
