@@ -71,12 +71,12 @@
           <div class="sidebar-content">
             <div class="user">
               <div class="avatar-sm float-left mr-2">
-                <img src="{% static 'img/profile.jpg' %}" alt="..." class="avatar-img rounded-circle" />
+                <img src="{% static 'img/pp.jpg' %}" alt="..." class="avatar-img rounded-circle" />
               </div>
               <div class="info">
                 <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                   <span>
-                    Hizrian
+                    lerezaNolsen
                     <span class="user-level">Administrator</span>
                     <span class="caret"></span>
                   </span>
@@ -114,15 +114,11 @@
                 <div class="collapse" id="dashboard">
                   <ul class="nav nav-collapse">
                     <li>
-                      <a href="#">
+                      <a href="{% url 'dashboard-chart' %}">
                         <span class="sub-item">Dashboard 1</span>
                       </a>
                     </li>
-                    <li>
-                      <a href="#">
-                        <span class="sub-item">Dashboard 2</span>
-                      </a>
-                    </li>
+          
                   </ul>
                 </div>
               </li>
@@ -133,33 +129,48 @@
                 <h4 class="text-section">Components</h4>
               </li>
               <li class="nav-item">
-                <a data-toggle="collapse" href="#base">
-                  <i class="fas fa-layer-group"></i>
-                  <p>Base</p>
-                  <span class="caret"></span>
+                <a href="{% url 'fire_station_list' %}">
+                  <i class="fas fa-fire-extinguisher"></i>
+                  <p>Fire Stations</p>
                 </a>
-                <div class="collapse" id="base">
-                  <ul class="nav nav-collapse">
-                    <li>
-                      <a href="components/avatars.html">
-                        <span class="sub-item">Avatars</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="components/buttons.html">
-                        <span class="sub-item">Buttons</span>
-                      </a>
-                    </li>
-                    
-                  </ul>
-                </div>
+              </li>
+              
+              <li class="nav-item">
+                <a href="{% url 'incident_list' %}">
+                  <i class="fas fa-fire"></i>
+                  <p>Fire Incidents</p>
+                </a>
+              </li>
+              
+              <li class="nav-item">
+                <a href="{% url 'firetruck_list' %}">
+                  <i class="fas fa-truck"></i>
+                  <p>Fire Trucks</p>
+                </a>
+              </li>
+                
+              <li class="nav-item">
+                <a href="{% url 'firefighter_list' %}">
+                    <i class="fas fa-fire"></i>
+                    <p>Firefighters</p>
+                </a>
+            </li>
+            
+          
+            
+
+              <li class="nav-item">
+                <a href="{% url 'location_list' %}">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <p>Locations</p>
+                </a>
               </li>
               
               
               
               <li class="nav-item">
                 <a data-toggle="collapse" href="#maps">
-                  <i class="fas fa-map-marker-alt"></i>
+                  <i class="fas fa-map"></i>
                   <p>Maps</p>
                   <span class="caret"></span>
                 </a>
@@ -171,13 +182,16 @@
                       </a>
                     </li>
                     <li>
-                      <a href="{% url 'map-station' %}"
+                      <a href="{% url 'fire-incidents-map' %}">
                         <span class="sub-item">Fire Incidents</span>
                       </a>
                     </li>
+                  
                   </ul>
                 </div>
               </li>
+
+              
               <li class="nav-item">
                 <a data-toggle="collapse" href="#charts">
                   <i class="far fa-chart-bar"></i>
@@ -187,25 +201,15 @@
                 <div class="collapse" id="charts">
                   <ul class="nav nav-collapse">
                     <li>
-                      <a href="#">
+                      <a href="{% url 'dashboard-chart' %}">
                         <span class="sub-item">Chart Js</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="charts/sparkline.html">
-                        <span class="sub-item">Sparkline</span>
                       </a>
                     </li>
                   </ul>
                 </div>
               </li>
-              <li class="nav-item">
-                <a href="widgets.html">
-                  <i class="fas fa-desktop"></i>
-                  <p>Widgets</p>
-                  <span class="badge badge-success">4</span>
-                </a>
-              </li>
+
+              
               
               
             </ul>
@@ -221,24 +225,7 @@
      
           </div>
         </div>
-        <footer class="footer">
-          <div class="container-fluid">
-            <nav class="pull-left">
-              <ul class="nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="https://www.themekita.com"> ThemeKita </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Help </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Licenses </a>
-                </li>
-              </ul>
-            </nav>
-            <div class="copyright ml-auto">2018, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.themekita.com">ThemeKita</a></div>
-          </div>
-        </footer>
+        
       </div>
     </div>
     <!--   Core JS Files   -->
