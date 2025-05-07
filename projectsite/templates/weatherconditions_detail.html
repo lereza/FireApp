@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Weather Condition Detail</h2>
+    <p><strong>Incident:</strong> {{ weathercondition.incident }}</p>
+    <p><strong>Temperature:</strong> {{ weathercondition.temperature }}</p>
+    <p><strong>Humidity:</strong> {{ weathercondition.humidity }}</p>
+    <p><strong>Wind Speed:</strong> {{ weathercondition.wind_speed }}</p>
+    <p><strong>Weather Description:</strong> {{ weathercondition.weather_description }}</p>
+    <a href="{% url 'weatherconditions_list' %}" class="btn btn-secondary">Back to List</a>
+</div>
+{% endblock %}

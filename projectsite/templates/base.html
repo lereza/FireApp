@@ -71,12 +71,12 @@
           <div class="sidebar-content">
             <div class="user">
               <div class="avatar-sm float-left mr-2">
-                <img src="{% static 'img/pp.jpg' %}" alt="..." class="avatar-img rounded-circle" />
+                <img src="{% static 'img/profiles.jpg' %}" alt="..." class="avatar-img rounded-circle" />
               </div>
               <div class="info">
                 <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                   <span>
-                    lerezaNolsen
+                    Olsen_Lereza
                     <span class="user-level">Administrator</span>
                     <span class="caret"></span>
                   </span>
@@ -155,7 +155,12 @@
                     <p>Firefighters</p>
                 </a>
             </li>
-            
+            <li class="nav-item">
+              <a href="{% url 'weatherconditions_list' %}">
+                  <i class="fas fa-cloud"></i>
+                  <p>Weather Conditions</p>
+              </a>
+          </li>
           
             
 

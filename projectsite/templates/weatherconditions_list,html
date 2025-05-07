@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>List of Weather Conditions</h2>
+    <form method="get" class="form-inline mb-3">
+        <input type="text" name="q" class="form-control mr-2" placeholder="Search" value="{{ request.GET.q }}">
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+      </form>
+    <a href="{% url 'weatherconditions_create' %}" class="btn btn-primary mb-3">Add New Weather Condition</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Incident</th>
+                <th>Temperature</th>
+                <th>Humidity</th>
+                <th>Wind Speed</th>
+                <th>Weather Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for weathercondition in weatherconditions %}
+            <tr>
+                <td>{{ weathercondition.incident }}</td>
+                <td>{{ weathercondition.temperature }}</td>
+                <td>{{ weathercondition.humidity }}</td>
+                <td>{{ weathercondition.wind_speed }}</td>
+                <td>{{ weathercondition.weather_description }}</td>
+                <td>
+                    <a href="{% url 'weatherconditions_update' weathercondition.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'weatherconditions_delete' weathercondition.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if is_paginated %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

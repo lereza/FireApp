@@ -36,5 +36,9 @@ urlpatterns = [
     path('firefighters/new/', views.firefighter_create, name='firefighter_create'),
     path('firefighters/<int:pk>/edit/', views.firefighter_update, name='firefighter_update'),
     path('firefighters/<int:pk>/delete/', views.firefighter_delete, name='firefighter_delete'),
-    
+    path('weatherconditions/', views.weatherconditions_list, name='weatherconditions_list'),
+    path('weatherconditions/<int:pk>/', views.weatherconditions_detail, name='weatherconditions_detail'),
+    path('weatherconditions/create/', views.weatherconditions_create, name='weatherconditions_create'),
+    path('weatherconditions/<int:pk>/update/', views.weatherconditions_update, name='weatherconditions_update'),
+    path('weatherconditions/<int:pk>/delete/', views.weatherconditions_delete, name='weatherconditions_delete'),
 ]

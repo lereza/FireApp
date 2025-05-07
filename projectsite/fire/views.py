@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.list import ListView
-from .models import Locations, Incident, FireStation, FireTruck, Firefighters
+from .models import Locations, Incident, FireStation, FireTruck, Firefighters, WeatherConditions
 from django.db import connection
 from collections import defaultdict
 from django.http import JsonResponse
@@ -11,7 +11,7 @@ import calendar
 from datetime import datetime
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from .forms import FireStationForm, IncidentForm, LocationForm, FireTruckForm, FirefightersForm
+from .forms import FireStationForm, IncidentForm, LocationForm, FireTruckForm, FirefightersForm, WeatherConditionsForm
 
 
 class HomePageView(ListView):
@@ -497,3 +497,48 @@ def firefighter_delete(request, pk):
 
 
 
+def weatherconditions_list(request):
+    query = request.GET.get('q')
+    if query:
+        weatherconditions = WeatherConditions.objects.filter(
+            Q(incident__description__icontains=query) | 
+            Q(temperature__icontains=query) |
+            Q(humidity__icontains=query) |
+            Q(wind_speed__icontains=query) |
+            Q(weather_description__icontains=query)
+        )
+    else:
+        weatherconditions = WeatherConditions.objects.all()
+    return render(request, 'weatherconditions_list.html', {'weatherconditions': weatherconditions})
+
+def weatherconditions_detail(request, pk):
+    weathercondition = get_object_or_404(WeatherConditions, pk=pk)
+    return render(request, 'weatherconditions_detail.html', {'weathercondition': weathercondition})
+
+def weatherconditions_create(request):
+    if request.method == 'POST':
+        form = WeatherConditionsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('weatherconditions_list')
+    else:
+        form = WeatherConditionsForm()
+    return render(request, 'weatherconditions_form.html', {'form': form})
+
+def weatherconditions_update(request, pk):
+    weathercondition = get_object_or_404(WeatherConditions, pk=pk)
+    if request.method == 'POST':
+        form = WeatherConditionsForm(request.POST, instance=weathercondition)
+        if form.is_valid():
+            form.save()
+            return redirect('weatherconditions_list')
+    else:
+        form = WeatherConditionsForm(instance=weathercondition)
+    return render(request, 'weatherconditions_form.html', {'form': form})
+
+def weatherconditions_delete(request, pk):
+    weathercondition = get_object_or_404(WeatherConditions, pk=pk)
+    if request.method == 'POST':
+        weathercondition.delete()
+        return redirect('weatherconditions_list')
+    return render(request, 'weatherconditions_confirm_delete.html', {'weathercondition': weathercondition})

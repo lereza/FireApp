@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h3 class="card-title">Delete Weather Condition</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p>Are you sure you want to delete the weather condition?</p>
+                    <p><strong>Incident:</strong> {{ weathercondition.incident }}</p>
+                    <p><strong>Temperature:</strong> {{ weathercondition.temperature }}</p>
+                    <p><strong>Humidity:</strong> {{ weathercondition.humidity }}</p>
+                    <p><strong>Wind Speed:</strong> {{ weathercondition.wind_speed }}</p>
+                    <p><strong>Weather Description:</strong> {{ weathercondition.weather_description }}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Yes, delete</button>
+                        <a href="{% url 'weatherconditions_list' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
